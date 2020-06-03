@@ -9,14 +9,12 @@ We address this problem locally with a tool that collects, cleans, joins and vis
 ----
 
 ### Team members
-Corey Christopherson
-Richard Todd
-Maggie Weatherly
+Corey Christopherson<br/>
+Richard Todd<br/>
+Maggie Weatherly<br/>
 Ruian Yang
 
 ### Software dependencies and license information
-
-Necessary dependencies can be installed following the steps below.
 
 #### Programming language: 
 
@@ -32,13 +30,8 @@ Necessary dependencies can be installed following the steps below.
 
 #### Installation:
 
-**1. Install numpy, pandas, and matplotlib:**  
-$ conda install numpy pandas matplotlib
-
-**2. Install geopanda:**  
-$ pip install geopanda
-
-**3. Install ipywidgets:**  
+$ conda install numpy pandas matplotlib<br/>
+$ pip install geopanda<br/>
 $ pip install ipywidgets
 
 #### Licensing info:
