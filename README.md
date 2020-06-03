@@ -8,13 +8,18 @@ We address this problem locally with a tool that collects, cleans, joins and vis
 
 ----
 
-### Team members
+## Team members
 Corey Christopherson<br/>
 Richard Todd<br/>
 Maggie Weatherly<br/>
 Ruian Yang
 
-### Software dependencies and license information
+## Data
+- [Source 1: Redfin](https://www.redfin.com)
+
+- [Source 2: King County Department of Assessments](https://info.kingcounty.gov/assessor/DataDownload/default.aspx)
+
+## Software dependencies and license information
 
 #### Programming language: 
 
@@ -38,7 +43,7 @@ $ pip install ipywidgets
 
 The MIT License is a permissive free software license originating at the Massachusetts Institute of Technology (MIT). As a permissive license, it puts only very limited restriction on reuse and has therefore an excellent license compatibility. For detailed description of the contents of license please refer to the file [License](https://github.com/chrico7/data515_project/blob/master/LICENSE).
 
-### Organization of the project
+## Organization of the project
 
 The project has the following structure:
 
