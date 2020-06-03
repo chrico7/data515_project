@@ -5,6 +5,7 @@ Final project for DATA515 spring 2020
 Buying a home is the largest single purchase that most people will make in their entire lives<sup>1</sup>. Additionally, the residential real estate market is one of the largest components of the American economy<sup>2</sup> and is closely regulated. Even so, good data on real estate trends and transactions is difficult to find and to access.
 
 We address this problem locally with a tool that collects, cleans, joins and visualizes real estate administrative and listing data.
+
 ----
 
 ### Team members
