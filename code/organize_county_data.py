@@ -104,8 +104,8 @@ def filter_county_data(zip_code: list, start_year='2010', start_month='1', start
     for code in zip_code:
         df_building_sf_zip = df_building_sf_zip.append(df_building_sf[df_building_sf['Zip code'] == code])
 
-    new_df = pd.merge(df_sale_sf_recent, df_building_sf_zip, how='inner', left_on=['Major', 'Minor'], right_on=['Major', 'Minor'])
-    df_all = pd.merge(new_df, df_parcel_sf, how='inner', left_on=['Major', 'Minor'], right_on=['Major', 'Minor'])
+    new_df = pd.merge(df_building_sf_zip, df_sale_sf_recent, how='left', left_on=['Major', 'Minor'], right_on=['Major', 'Minor'])
+    df_all = pd.merge(new_df, df_parcel_sf, how='left', left_on=['Major', 'Minor'], right_on=['Major', 'Minor'])
 
     # replace numerical codes in records to readable descriptions
     for col in df_all.columns:
