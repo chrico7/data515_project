@@ -1,2 +1,8 @@
 pandas
 numpy
+requests
+io
+pathlib
+difflib
+datetime
+time
