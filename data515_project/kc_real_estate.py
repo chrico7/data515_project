@@ -41,7 +41,7 @@ working_path = Path.cwd() / 'data515_project'
 data_path = working_path / 'data'
 kc_path = data_path / 'kc'
 redfin_path = data_path / 'redfin'
-examples_path = working_path / 'examples'
+examples_path = Path.cwd() / 'examples'
 output_path = working_path / 'output'
 
 # Define functions
