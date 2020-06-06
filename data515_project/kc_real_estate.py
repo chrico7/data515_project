@@ -593,10 +593,10 @@ if __name__ == "__main__":
         end_day = (input("Enter end day: "))
 
 # Organize King County data
-df_county = filter_county_data(df_sale, df_building, df_parcel, df_lookup,
-                               zip_code,
-                               start_year, start_month, start_day,
-                               end_year, end_month, end_day)
+df_county = organize_county_data(df_sale, df_building, df_parcel, df_lookup,
+                                 zip_code,
+                                 start_year, start_month, start_day,
+                                 end_year, end_month, end_day)
 
 # Combine assessor and redfin data
 all_data = join_county_redfin(df_county, df_redfin)
