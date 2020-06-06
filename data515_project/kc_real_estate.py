@@ -16,7 +16,7 @@ Functions:
 
 Examples:
 
-    
+
 """
 
 # Import packages
@@ -34,10 +34,10 @@ import time
 # Define paths
 home_path = Path.home()
 working_path = Path.cwd()
-data_path = home_path / 'data'
+data_path = working_path / 'data'
 kc_path = data_path / 'kc'
 redfin_path = data_path / 'redfin'
-examples_path = home_path / 'examples'
+examples_path = working_path / 'examples'
 
 # Define functions
 def get_county_data(file_name, num_rows=None):
@@ -137,8 +137,8 @@ def get_county_data(file_name, num_rows=None):
 def get_redfin_data():
     """ Retrieves active King County SFH Redfin listings.
 
-    Retrieves active Redfin listings from either the Redfin API 
-    or a local file if the API fails. Results are limited to 
+    Retrieves active Redfin listings from either the Redfin API
+    or a local file if the API fails. Results are limited to
     single family homes in King County.
 
     Returns:
@@ -149,14 +149,14 @@ def get_redfin_data():
         OSError: If a connection to the API URL is unable to be established.
         FileNotFoundError: If the local file is not found.
     """
-    
+
     # Initialize dataframe
     df = pd.DataFrame()
-    
+
     # Define inner functions
     def get_from_api():
         # Retreives Redfin data using the API
-        
+
         # Define API URL
         all_king_url = (r'https://www.redfin.com/stingray/api/gis-csv?al=1&' +
                         r'cluster_bounds=-123.04941%2046.84777%' +
@@ -166,10 +166,10 @@ def get_redfin_data():
                         r'ord=redfin-recommended-asc&page_number=1&' +
                         r'region_id=118&region_type=5&sf=1,2,3,5,6,7&' +
                         r'status=1&uipt=1,2,3,4,5,6&v=8')
-        
+
         # Get API response
         urlData = requests.get(all_king_url).content
-        
+
         # Check if API response has been blocked
         if "spam bot" in str(urlData):
             raise ValueError("Redfin api error")
@@ -181,10 +181,10 @@ def get_redfin_data():
                               'https://redfin.com is available')
             else:
                 return df
-        
+
     def get_from_file():
         # Retreives Redfin data from local file
-        
+
         file_path = redfin_path / "All_King_Redfin.csv"
 
         #return pd.read_csv('https://raw.githubusercontent.com/chrico7/' +
@@ -204,10 +204,10 @@ def organize_county_data(df_sale, df_building, df_parcel, df_lookup,
                          start_year='2010', start_month='1', start_day='1',
                          end_year='2020', end_month='1', end_day='1'):
     """ Cleans and organizes data retrieved from King County Assessors website.
-    
+
     Renames columns consistently, filters data using default and customizable
     inputs, merges data to a single csv file.
-    
+
     Args:
         df_sale(DataFrame): King County Assessor's sales data
         df_building(DataFrame): King County Assessor's buildings data
@@ -265,9 +265,8 @@ def organize_county_data(df_sale, df_building, df_parcel, df_lookup,
             kc_zip_codes[i] = int(kc_zip_codes[i])
             kc_zip_codes[i] = str(kc_zip_codes[i])
 
-        if (kc_zip_codes[i][:2] != '98' or
-            (len(kc_zip_codes[i]) != 5 and
-             len(kc_zip_codes[i]) != 10)):
+        if (kc_zip_codes[i][:2] != '98' or (len(kc_zip_codes[i]) != 5 and
+                                            len(kc_zip_codes[i]) != 10)):
             index.append(i)
 
     valid_zip = np.delete(kc_zip_codes, index)
@@ -291,7 +290,7 @@ def organize_county_data(df_sale, df_building, df_parcel, df_lookup,
                   ['Document Date'].iloc[0].year)
     end_year = (df_sale.sort_values(['Document Date'], ascending=[True])
                 ['Document Date'].iloc[-1].year)
-    
+
     if int(start_year) < int(begin_year):
         raise ValueError('There is no record before year' + str(begin_year))
     if int(start_year) > int(end_year):
@@ -329,7 +328,7 @@ def organize_county_data(df_sale, df_building, df_parcel, df_lookup,
                       how='left',
                       left_on=['Major', 'Minor'],
                       right_on=['Major', 'Minor'])
-    
+
     df_all = pd.merge(new_df, df_sale_sf_recent,
                       how='left',
                       left_on=['Major', 'Minor'],
@@ -361,7 +360,7 @@ def join_county_redfin(kc_data, redfin_data):
     Joins the passed dataframes kc_data and redfin_data (representing King
     County and Redfin data respectively) using the pandas merge() function
     and address matching with the difflib get_close_matches() function.
-    King County data must contain Major, Minor, Situs Address, and Zip code 
+    King County data must contain Major, Minor, Situs Address, and Zip code
     fields. Redfin data must contain MLS#, ADDRESS, and ZIP OR POSTAL CODE
     fields.
 
@@ -422,10 +421,10 @@ def join_county_redfin(kc_data, redfin_data):
 
     # Extract list of unique zip_codes
     kc_trim.loc[:, 'Zip code'] = (pd.to_numeric(kc_trim['Zip code'].
-                                               fillna('0').str[:5],
-                                               errors='coerce').
-                                 fillna('0').astype(int))
-    zip_codes = (kc_trim.loc[(kc_trim['Zip code'] !=0 ) &
+                                                fillna('0').str[:5],
+                                                errors='coerce').
+                                  fillna('0').astype(int))
+    zip_codes = (kc_trim.loc[(kc_trim['Zip code'] != 0 ) &
                              (kc_trim['Zip code'].astype(str).str.len() == 5) &
                              (kc_trim['Zip code'].astype(str).
                               str.contains('^9')),
@@ -434,10 +433,10 @@ def join_county_redfin(kc_data, redfin_data):
 
     # Replace zip code in Situs Address field
     kc_trim.loc[:, 'Situs Address'] = (kc_trim['Situs Address'].
-                                 str.replace('|'.join(zip_codes.
-                                                      astype(str).
-                                                      to_list()), '')
-                                 .str.strip())
+                                       str.replace('|'.join(zip_codes.
+                                                            astype(str).
+                                                            to_list()), '')
+                                       .str.strip())
 
     # Trim spaces from Situs Address field
     kc_trim.loc[:, 'Situs Address'] = (kc_trim['Situs Address'].
@@ -492,7 +491,7 @@ def join_county_redfin(kc_data, redfin_data):
 
         # Extract street info
         temp_rf.loc[:, 'rf_street'] = (temp_rf['ADDRESS'].str.split(' ', 1).
-                                      str[1].str.strip())
+                                       str[1].str.strip())
         temp_kc.loc[:, 'kc_street'] = (temp_kc['Situs Address'].
                                        str.split(' ', 1).
                                        str[1].str.strip())
@@ -505,14 +504,14 @@ def join_county_redfin(kc_data, redfin_data):
                                                                         match_list,
                                                                         n=1,
                                                                         cutoff=0.6))).str.join(',')
-        
+
         # Merge on building number and fuzzy match
         temp_all = pd.merge(temp_kc,
                             temp_rf,
                             how='inner',
                             left_on=['kc_num', 'kc_street'],
                             right_on=['rf_num', 'fuzzy_match'])
-        
+
         # Drop cols
         temp_all = temp_all.drop(['rf_num', 'rf_street',
                                   'fuzzy_match',
@@ -532,7 +531,7 @@ def join_county_redfin(kc_data, redfin_data):
     data_final = pd.merge(kc_data,
                           match_fields,
                           how='left', on=['Major', 'Minor'])
-    
+
     data_final = pd.merge(data_final,
                           redfin_data,
                           how='left', on=['MLS#'])
@@ -544,7 +543,8 @@ def join_county_redfin(kc_data, redfin_data):
 ####
 
 # Get raw assessor's data
-print("Hold on, we're getting the most recent historical data "+ 
+print("Thanks for using the King County Real Estate Tool! \n" +
+      "Hold on, we're getting the most recent historical data "+
       "from the King County Assessor and current active " +
       "listings from Redfin")
 
@@ -558,12 +558,12 @@ df_redfin = get_redfin_data()
 
 # get user input and generate variables
 if __name__ == "__main__":
-    
+
     # Ask if user would like to use defaults
     while True:
-        use_default = (input("Would you like to use" + 
+        use_default = (input("Would you like to use" +
                              "tool defaults? (Yes/No): "))
-        
+
         # Check inputs
         try:
             isinstance(use_default, bool)
@@ -571,12 +571,12 @@ if __name__ == "__main__":
             print("Please enter True or False!")
         else:
             break
-    
+
     # Define tool parameters (user input or default)
     if use_default:
-        zip_code = ['98122','98144']
-        start_year ='2016'
-        start_month ='1'
+        zip_code = ['98122', '98144']
+        start_year = '2016'
+        start_month = '1'
         start_day = '1'
         end_year = '2019'
         end_month = '12'
