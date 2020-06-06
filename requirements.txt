@@ -1,7 +1,7 @@
 datetime
 geopandas
 ipywidgets
-matplotlib.pyplot
+matplotlib
 numpy
 pandas
-plotly.express
+plotly
