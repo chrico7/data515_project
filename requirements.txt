@@ -1,7 +1,8 @@
-datetime
+requests
 geopandas
 ipywidgets
 matplotlib
 numpy
 pandas
 plotly
+notebook
