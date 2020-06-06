@@ -1,9 +1,4 @@
 datetime
-difflib
-io
-pathlib
-time
-requests
 geopandas
 ipywidgets
 matplotlib.pyplot
