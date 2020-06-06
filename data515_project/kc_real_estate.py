@@ -155,9 +155,6 @@ def get_redfin_data():
         FileNotFoundError: If the local file is not found.
     """
 
-    # Initialize dataframe
-    df = pd.DataFrame()
-
     # Define inner functions
     def get_from_api():
         # Retreives Redfin data using the API
@@ -173,28 +170,25 @@ def get_redfin_data():
                         r'status=1&uipt=1,2,3,4,5,6&v=8')
 
         # Get API response
-        urlData = requests.get(all_king_url).content
+        url_data = requests.get(all_king_url).content
 
         # Check if API response has been blocked
-        if "spam bot" in str(urlData):
+        if "spam bot" in str(url_data):
             raise ValueError("Redfin api error")
-        else:
-            df = pd.read_csv(io.StringIO(urlData.decode('utf-8')))
-            if df.empty:
-                raise OSError('The Redfin API page could not be ' +
-                              'reached. Please check that ' +
-                              'https://redfin.com is available')
-            else:
-                return df
+
+        # If API response is not blocked
+        redfin_dataframe = pd.read_csv(io.StringIO(url_data.decode('utf-8')))
+        if redfin_dataframe.empty:
+            raise OSError('The Redfin API page could not be ' +
+                          'reached. Please check that ' +
+                          'https://redfin.com is available')
+        return redfin_dataframe
 
     def get_from_file():
         # Retreives Redfin data from local file
 
         file_path = redfin_path / "All_King_Redfin.csv"
 
-        #return pd.read_csv('https://raw.githubusercontent.com/chrico7/' +
-        #                   'data515_project/master/data/redfin/' +
-        #                   'All_King_Redfin.csv')
         return pd.read_csv(file_path)
 
     # Retreive Redfin data
