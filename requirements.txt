@@ -2,6 +2,3 @@ pandas
 numpy
 requests
 pathlib
-difflib
-datetime
-time
