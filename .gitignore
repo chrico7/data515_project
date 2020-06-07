@@ -1,0 +1,13 @@
+.ipynb_checkpoints/
+
+build/
+
+dist/
+
+KingCountyRealEstate.egg-info/
+
+default.profraw
+
+data515_project/__pycache__/
+
+__pycache__/
