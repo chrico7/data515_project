@@ -1,5 +1,5 @@
 import unittest
-import kc_real_estate as kc
+import data515_project.kc_real_estate as kc
 
 # Define a class in which the tests will run
 class UnitTests(unittest.TestCase):
