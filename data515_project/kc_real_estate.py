@@ -35,6 +35,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+
 # Define paths
 home_path = Path.home()
 working_path = Path.cwd() / 'data515_project'
@@ -44,7 +45,7 @@ redfin_path = data_path / 'redfin'
 examples_path = Path.cwd() / 'examples'
 output_path = working_path / 'output'
 
-# Define functions
+
 def get_county_data(file_name, num_rows=None):
     """ Retrieves a single data-file from the King County Assessors webstie.
 
@@ -537,74 +538,12 @@ def join_county_redfin(kc_data, redfin_data):
 
     return data_final
 
-####
-## Run Module
-####
-"""
-# Get raw assessor's data
-print("Thanks for using the King County Real Estate Tool! \n" +
-      "Hold on, we're getting the most recent historical data "+
-      "from the King County Assessor and current active " +
-      "listings from Redfin")
 
-df_sale = get_county_data("Real%20Property%20Sales")
-df_building = get_county_data("Residential%20Building")
-df_parcel = get_county_data("Parcel")
-df_lookup = get_county_data("Lookup")
-
-# Get raw redfin data
-df_redfin = get_redfin_data()
-
-# get user input and generate variables
-if __name__ == "__main__":
-
-    # Ask if user would like to use defaults
-    while True:
-        use_default = (input("Would you like to use" +
-                             "tool defaults? (Yes/No): "))
-
-        # Check inputs
-        try:
-            isinstance(use_default, bool)
-        except ValueError:
-            print("Please enter True or False!")
-        else:
-            break
-
-    # Define tool parameters (user input or default)
-    if use_default:
-        zip_code = ['98122', '98144']
-        start_year = '2016'
-        start_month = '1'
-        start_day = '1'
-        end_year = '2019'
-        end_month = '12'
-        end_day = '31'
-    else:
-        zip_code = [str(item) for item in input("Enter zip code " +
-                                                "(separated by comma) : ").
-                    split()]
-        start_year = (input("Enter start year: "))
-        start_month = (input("Enter start month: "))
-        start_day = (input("Enter start day: "))
-        end_year = (input("Enter end year: "))
-        end_month = (input("Enter end month: "))
-        end_day = (input("Enter end day: "))
-
-# Organize King County data
-df_county = organize_county_data(df_sale, df_building, df_parcel, df_lookup,
-                                 zip_code,
-                                 start_year, start_month, start_day,
-                                 end_year, end_month, end_day)
-
-# Combine assessor and redfin data
-all_data = join_county_redfin(df_county, df_redfin)
-"""
-# Generate visualizations from resulting dataframes, aggregating for easy charting
-
+#Generate visualizations from resulting dataframes, aggregating for easy charting
 def aggregate_by_zip_spacial(input_dataframe=
                              pd.read_csv(examples_path /
-                                         "sample_data_98075_2018-19.csv")):
+                                         "sample_data_98075_2018-19.csv",
+                                        low_memory=False)):
     """
     Aggregates a joined input dataframe by date to allow easy graphing of trends
 
@@ -635,7 +574,8 @@ def aggregate_by_zip_spacial(input_dataframe=
     #convert to geodataframe for easy merging
     input_dataframe = gpd.GeoDataFrame(input_dataframe,
                                        geometry=gpd.points_from_xy(input_dataframe['LONGITUDE'],
-                                                                   input_dataframe['LATITUDE']))
+                                                                   input_dataframe['LATITUDE']),
+                                       crs='epsg:4326')
 
     #pull in King County zip shapefiles and pare down to geometry and zip
     df_zip_shape = gpd.read_file(
@@ -701,7 +641,8 @@ def zipcode_choro(opening_data=aggregate_by_zip_spacial(), mapping_var='Mean sal
     plt.savefig(output_path / 'zipcode_choro_output.png')
 
 def aggregate_by_date(input_dataframe=pd.read_csv(examples_path /
-                                                  "sample_data_98075_2018-19.csv")):
+                                                  "sample_data_98075_2018-19.csv",
+                                                 low_memory=False)):
     """
     Aggregates a joined input dataframe by date to allow easy graphing of trends
 
