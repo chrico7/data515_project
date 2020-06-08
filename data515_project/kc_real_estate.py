@@ -538,24 +538,42 @@ def join_county_redfin(kc_data, redfin_data):
 
 #Generate visualizations from resulting dataframes, aggregating for easy charting
 def view_redfin_data_by_agg(input_dataframe, aggreg_meth):
-    data_rf = input_dataframe.loc[input_dataframe['SALE TYPE'] == 'MLS Listing']
-    with urllib.request.urlopen("https://opendata.arcgis.com/datasets/06da0f67fc1948e3aae93063750ad02b_790.geojson") as url:
-        data = json.loads(url.read().decode())
-    df = data_rf
-    small = df[['ZIP OR POSTAL CODE', aggreg_meth]]
-    df_new = pd.DataFrame(small.groupby(['ZIP OR POSTAL CODE']).mean()).reset_index()
-    fig = px.choropleth_mapbox(df_new, geojson=data, locations='ZIP OR POSTAL CODE', 
-                               color=aggreg_meth,
-                               featureidkey='properties.ZIP',
-                               color_continuous_scale="Viridis",
-                               mapbox_style="carto-positron",
-                               zoom=9, center = {"lat": 47.62, "lon": -122.3},
-                               opacity=0.5,
-                               labels={aggreg_meth:aggreg_meth}
-                              )
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-    fig.show()
-    
+    """ Visualizes all Redfin Data currently availabe in a Plotly 
+        visualization.
+
+    Args:
+        input_dataframe: Dataframe from intial data pull of the Redfin website API
+        aggreg_meth: A string that represents the column name which we will be the 
+        column which aggregations are done on. Possible values: 'SQUARE FEET', 
+        'PRICE', 'DAYS ON MARKET', 'LOT SIZE'
+
+    Returns:
+        A Plotly Figure
+
+    Raises:
+        KeyError: If passed aggreg_meth value is not correct
+    """
+    possible_vals = ['SQUARE FEET', 'PRICE', 'DAYS ON MARKET', 'LOT SIZE']
+    if aggreg_meth not in possible_vals:
+        raise KeyError("Passed in aggregation is not correct. Please pass correct value.")
+    else:
+        data_rf = input_dataframe.loc[input_dataframe['SALE TYPE'] == 'MLS Listing']
+        with urllib.request.urlopen("https://opendata.arcgis.com/datasets/06da0f67fc1948e3aae93063750ad02b_790.geojson") as url:
+            data = json.loads(url.read().decode())
+        df = data_rf
+        small = df[['ZIP OR POSTAL CODE', aggreg_meth]]
+        df_new = pd.DataFrame(small.groupby(['ZIP OR POSTAL CODE']).mean()).reset_index()
+        fig = px.choropleth_mapbox(df_new, geojson=data, locations='ZIP OR POSTAL CODE', 
+                                   color=aggreg_meth,
+                                   featureidkey='properties.ZIP',
+                                   color_continuous_scale="Viridis",
+                                   mapbox_style="carto-positron",
+                                   zoom=9, center = {"lat": 47.62, "lon": -122.3},
+                                   opacity=0.5,
+                                   labels={aggreg_meth:aggreg_meth}
+                                  )
+        fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+        fig.show()
 def aggregate_by_zip_spacial(input_dataframe=
                              pd.read_csv(examples_path /
                                          "sample_data_98075_2018-19.csv",
@@ -610,10 +628,10 @@ def aggregate_by_zip_spacial(input_dataframe=
                                'Mean days on market',
                                'Mean size (square feet)',
                                'Mean cost per sqft']
-
-    #merge aggregated redfin with with zip dataframe
+    #convert zip code column to int
+    input_dataframe = input_dataframe.reset_index()
+    input_dataframe['Zip code'] = input_dataframe['Zip code'].astype('int64')
     merged_df = df_zip_shape.merge(input_dataframe, left_on='ZIP', right_on='Zip code')
-
     return merged_df
 
 def zipcode_choro(opening_data=aggregate_by_zip_spacial(), mapping_var='Mean sale price'):
@@ -655,7 +673,45 @@ def zipcode_choro(opening_data=aggregate_by_zip_spacial(), mapping_var='Mean sal
     plt.axis('equal')
     plt.title(mapping_var)
     plt.savefig(output_path / 'zipcode_choro_output.png')
+def zip_code_agg_plotly(input_dataframe, aggreg_meth):
+    """
+    Creates Plot.ly map for the variable of interest
 
+    Args:
+        input_dataframe: aggregated dataframe of a format consistent with the output of
+        aggregate_by_zip_spacial.If no input is provided, the default example dataframe
+        from that function is used.
+
+        aggreg_meth: a string identifying the variable to be mapped; must be a column name
+        within input_dataframe.
+
+    Returns:
+        A Plot.ly Figure of the data by Zip Code with color corresponding to aggregation value
+
+    Raises:
+        ValueError: If passed mapping_var is not a column within input_dataframe.
+    """
+    if aggreg_meth not in input_dataframe.columns:
+        raise ValueError('The aggregation variable that you\'ve entered is not valid. ' +
+                         'Please select a column from your input dataframe (below)' +
+                         'or select a new input dataframe.')
+    else:
+        with urllib.request.urlopen("https://opendata.arcgis.com/datasets/06da0f67fc1948e3aae93063750ad02b_790.geojson") as url:
+            data = json.loads(url.read().decode())
+        df = input_dataframe
+        small = df[['Zip code', aggreg_meth]]
+        df_new = pd.DataFrame(small.groupby(['Zip code']).mean()).reset_index()
+        fig = px.choropleth_mapbox(df_new, geojson=data, locations='Zip code', 
+                                   color=aggreg_meth,
+                                   featureidkey='properties.ZIP',
+                                   color_continuous_scale="Viridis",
+                                   mapbox_style="carto-positron",
+                                   zoom=9, center = {"lat": 47.62, "lon": -122.3},
+                                   opacity=0.5,
+                                   labels={aggreg_meth:aggreg_meth}
+                                  )
+        fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+        fig.show()
 def aggregate_by_date(input_dataframe=pd.read_csv(examples_path /
                                                   "sample_data_98075_2018-19.csv",
                                                  low_memory=False)):
@@ -713,3 +769,40 @@ def trend_plot(input_dataframe=aggregate_by_date(), trend_variable='Mean sale pr
     plt.title(trend_variable)
     tr_ax.set_xlim([min(input_dataframe.index), max(input_dataframe.index)])
     plt.savefig(output_path / 'trend_plot_output.png')
+def plotly_by_date(data, zip_flag=None):
+    """
+    Creates a simple Plot.ly line graph of the variable of interest
+
+    Args:
+        data: an input dataframe of a format consistent with the output of
+        aggregate_by_date. If no input is provided, then the default example
+        dataframe is used.
+
+        zip_flag: optional flag so the user can see the line graph broken up by zip code
+    Returns:
+        A Plot.ly Figure
+    """
+    if (zip_flag==None):
+        agg_by_date = aggregate_by_date(data)
+        agg_by_date = agg_by_date.reset_index()
+        fig = px.line(agg_by_date, x="Document Date", y="Mean sale price", title='Mean Sale Price During Time Frame')
+        fig.show()
+    else:
+        data['Document Date'] = data['Document Date'].astype('datetime64[ns]')
+
+        #aggregate key variables in dataframe by date
+        input_aggregate = data.groupby(["Zip code","Document Date"]).agg(
+            {'Sale Price':'mean',
+             'Excise Tax Number':'nunique'})
+        
+        input_aggregate = input_aggregate.reset_index()
+
+        #rename columns to reflect aggregation
+        input_aggregate.columns = ['Zip Code', 'Document Date', 'Mean sale price', 'Number of transactions']
+
+        #remove any miscodes (some dates in 2070)
+        agg_by_date = input_aggregate[input_aggregate['Document Date'] < datetime.datetime.now()]
+        fig = px.line(agg_by_date, x="Document Date", y="Mean sale price", color="Zip Code",
+              line_group="Zip Code", hover_name="Zip Code", 
+                      title='Mean Sale Price During Time Frame Broken up by Zip Code')
+        fig.show()

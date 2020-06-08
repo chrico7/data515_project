@@ -23,6 +23,18 @@ print("Data is collected. To explore Redfin's King County MLS Data run kc.view_r
 ## Query Data By Zip and Date
 ####
 def lets_begin():
+    """ Begins the data query based on user inputted data. This function allows the user
+        to easily query the data by zip_code and date
+
+    Args:
+        None
+
+    Returns:
+        A Pandas DataFrame
+
+    Raises:
+        KeyError: If the user doesn't input 'Yes' or No'
+    """
     # get user input and generate variables
     while True:
         user_input = (input("Would you like to use" +
