@@ -48,8 +48,8 @@ def lets_begin():
 
     # Define tool parameters (user input or default)
     if user_input == 'Yes':
-        zip_code = ['98122', '98144']
-        start_year = '2016'
+        zip_code = ['98122', '98144', '98103', '98039']
+        start_year = '2018'
         start_month = '1'
         start_day = '1'
         end_year = '2019'

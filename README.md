@@ -20,6 +20,8 @@ Ruian Yang
 
 - [Source 2: King County Department of Assessments](https://info.kingcounty.gov/assessor/DataDownload/default.aspx)
 
+- [Source 3: King County GIS Open Data](https://gis-kingcounty.opendata.arcgis.com/datasets/e6c555c6ae7542b2bdec92485892b6e6_113)
+
 ## Software dependencies and license information
 
 #### Programming language: 
@@ -32,13 +34,22 @@ Ruian Yang
 - pandas 1.0.4  
 - matplotlib 1.5.3  
 - geopanda 0.7.0 
-- ipywidgets 7.5.1  
+- ipywidgets 7.5.1 
+- requests 2.23.0
+- plotly 4.8.1
+- notebook 6.0.3
 
 #### Installation:
 
-$ conda install numpy pandas matplotlib<br/>
-$ pip install geopanda<br/>
-$ pip install ipywidgets
+We recommend using conda to manage your python environment and packages
+
+$ git clone https://github.com/chrico7/data515_project.git
+$ cd data515_project/
+$ conda install --file requirements.txt
+$ python3 setup.py install
+$ jupyter notebook
+
+Then run <code>import data515_project.run as kc</code>. See Demo.ipynb for examples.
 
 #### Licensing info:
 
@@ -51,18 +62,15 @@ The project has the following structure:
 ```
 data515_project/
   |- README.md
-  |- code/
-     |-get_county_data.py
-     |-get_redfin_data.py
-     |-join_county_redfin.py
-     |-merge_kc_csvs.ipynb
-     |-organize_county_data.py
-     |-visualization_wip.ipynb
-  |- data/
-     |-kc/
-     |-redfin/
-  |- examples/
-     |-interactive_notebook.ipynb
+  |- data515_project/
+     |-__init__.py
+     |-kc_real_estate.py
+     |-run.py
+     |- data/
+        |-kc/
+        |-redfin/
+     |- tests/
+  |- Demo.ipynb
   |- docs/
      |- FunctionalSpec
      |- Designspec
