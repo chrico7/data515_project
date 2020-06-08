@@ -1,8 +1,5 @@
 from data515_project.kc_real_estate import *
 
-####
-## Run Module
-####
 
 # Get raw assessor's data
 print("Thank you for using the King County Real Estate Tool! \n" +
@@ -19,9 +16,12 @@ df_lookup = get_county_data("Lookup")
 # Get raw redfin data
 df_redfin = get_redfin_data()
 
-print("Data is collected. To begin run kc.lets_begin() in the cell below.")
+print("Data is collected. To explore Redfin's King County MLS Data run kc.view_redfin_data_by_price(kc.df_redfin) below. Or to begin querying the data run kc.lets_begin() in the cell below.")
 
 
+####
+## Query Data By Zip and Date
+####
 def lets_begin():
     # get user input and generate variables
     while True:
@@ -44,8 +44,8 @@ def lets_begin():
         end_month = '12'
         end_day = '31'
     else:
-        zip_code = [str(item) for item in input("Enter zip code " +
-                                                "(separated by comma) : ").split()]
+        zip_code = [x.strip(' ') for x in input("Enter zip code (separated by comma) : ").split(',')]
+        #print(zip_code)
         start_year = (input("Enter start year: "))
         start_month = (input("Enter start month: "))
         start_day = (input("Enter start day: "))
@@ -53,7 +53,6 @@ def lets_begin():
         end_month = (input("Enter end month: "))
         end_day = (input("Enter end day: "))
 
-        
     print("Querying King County Data")
     # Organize King County data
     df_county = organize_county_data(df_sale, df_building, df_parcel, df_lookup,
@@ -63,5 +62,5 @@ def lets_begin():
     print("Joining with Redfin Data")
 
     # Combine assessor and redfin data
-    all_data = join_county_redfin(df_county, df_redfin)
-    return all_data
+    result = join_county_redfin(df_county, df_redfin)
+    return result

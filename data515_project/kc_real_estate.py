@@ -34,6 +34,9 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import plotly.express as px
+import urllib.request
+import json 
 
 
 # Define paths
@@ -231,7 +234,6 @@ def organize_county_data(df_sale, df_building, df_parcel, df_lookup,
         ValueError: If passed end_year is after the last record.
         ValueError: If start date is after end date based on passed values.
     """
-
     df_sale = df_sale[df_sale['Major'] != '      ']
     df_sale = df_sale.astype({'Major': int, 'Minor': int})
 
@@ -256,31 +258,30 @@ def organize_county_data(df_sale, df_building, df_parcel, df_lookup,
 
     df_lookup['Look Up Description'] = (df_lookup['Look Up Description'].
                                         str.strip())
-
     # get valid zip codes in King County
-    kc_zip_codes = df_building['Zip code'].dropna().unique()
-    index = []
-    for i in range(len(kc_zip_codes)):
-        if type(kc_zip_codes[i]) == float:
-            kc_zip_codes[i] = int(kc_zip_codes[i])
-            kc_zip_codes[i] = str(kc_zip_codes[i])
-
-        if (kc_zip_codes[i][:2] != '98' or (len(kc_zip_codes[i]) != 5 and
-                                            len(kc_zip_codes[i]) != 10)):
-            index.append(i)
-
-    valid_zip = np.delete(kc_zip_codes, index)
-
-    for i in range(len(valid_zip)):
-        if len(valid_zip[i]) == 10:
-            valid_zip[i] = valid_zip[i][:5]
-
+#    kc_zip_codes = df_building['Zip code'].dropna().unique()
+#    index = []
+#    for i in range(len(kc_zip_codes)):
+#        if type(kc_zip_codes[i]) == float:
+#            kc_zip_codes[i] = int(kc_zip_codes[i])
+#            kc_zip_codes[i] = str(kc_zip_codes[i])
+#
+#        if (kc_zip_codes[i][:2] != '98' or (len(kc_zip_codes[i]) != 5 and
+#                                            len(kc_zip_codes[i]) != 10)):
+#            index.append(i)
+#
+#    valid_zip = np.delete(kc_zip_codes, index)
+#
+#    for i in range(len(valid_zip)):
+#        if len(valid_zip[i]) == 10:
+#            valid_zip[i] = valid_zip[i][:5]
+#
+#    print(zip_code)
     # check zip code(s)
-    for code in zip_code:
-        if code not in np.unique(valid_zip):
-            raise ValueError('The zip code ' + str(code) +
-                             ' you\'ve entered is not in King County')
-
+#    for code in zip_code:
+#        if code not in np.unique(valid_zip):
+#            raise ValueError('The zip code ' + str(code) +
+#                             ' you\'ve entered is not in King County')
     # check dates
     df_sale['Document Date'] = pd.to_datetime(df_sale['Document Date'])
     start_date = start_year + '-' + start_month + '-' + start_day
@@ -307,45 +308,41 @@ def organize_county_data(df_sale, df_building, df_parcel, df_lookup,
     df_building['Zip code'] = df_building['Zip code'].astype(str)
 
     # limit properties to only single family houses
-    df_parcel_sf = df_parcel[df_parcel['Property Type'] == 'R']
+    df_parcel_sf = df_parcel.loc[df_parcel['Property Type'] == 'R']
     df_parcel_sf = df_parcel_sf.drop(columns=['Property Type'])
-    df_sale_sf = df_sale[df_sale['Property Type'] == 11]
-    df_building_sf = df_building[df_building['Number Living Units'] == 1]
+    df_sale_sf = df_sale.loc[df_sale['Property Type'] == 11]
+    df_building_sf = df_building.loc[df_building['Number Living Units'] == 1]
 
     # filter by a start date and end date
     df_sale_sf_recent = df_sale_sf[df_sale_sf['Document Date'] >= start_date]
     df_sale_sf_recent = df_sale_sf_recent[df_sale_sf_recent['Document Date']
                                           <= end_date]
-
-    # filter by zip code(s)
-    df_building_sf_zip = pd.DataFrame()
-    for code in zip_code:
-        df_building_sf_zip = (df_building_sf_zip.append(
-            df_building_sf[df_building_sf['Zip code'] == code]))
-
+    # filter by zip
+    #print(zip_code)
+    df_building_sf_zip = df_building_sf[df_building_sf['Zip code'].isin(zip_code)]
+    #print(df_building_sf['Zip code'].value_counts())
+    #print(df_building_sf_zip['Zip code'].value_counts())
     # combine data into a single frame
     new_df = pd.merge(df_building_sf_zip, df_parcel_sf,
                       how='left',
                       left_on=['Major', 'Minor'],
                       right_on=['Major', 'Minor'])
-
     df_all = pd.merge(new_df, df_sale_sf_recent,
                       how='left',
                       left_on=['Major', 'Minor'],
                       right_on=['Major', 'Minor'])
-
     # replace numerical codes in records to readable descriptions
     for col in df_all.columns:
         if col in df_lookup_items['Field Name'].tolist():
-            look_up_type = int(df_lookup_items[df_lookup_items['Field Name']
+            look_up_type = int(df_lookup_items.loc[df_lookup_items['Field Name']
                                                == col]['Look Up'])
-            look_up_items = df_lookup[df_lookup['Look Up Type']
+            look_up_items = df_lookup.loc[df_lookup['Look Up Type']
                                       == look_up_type]
 
             description_list = []
             for i in range(len(df_all[col])):
                 num = df_all[col].iloc[i]
-                description = (look_up_items[look_up_items['Look Up Item']
+                description = (look_up_items.loc[look_up_items['Look Up Item']
                                              == num]['Look Up Description'])
                 if len(description) == 0:
                     description_list.append('nan')
@@ -540,6 +537,25 @@ def join_county_redfin(kc_data, redfin_data):
 
 
 #Generate visualizations from resulting dataframes, aggregating for easy charting
+def view_redfin_data_by_agg(input_dataframe, aggreg_meth):
+    data_rf = input_dataframe.loc[input_dataframe['SALE TYPE'] == 'MLS Listing']
+    with urllib.request.urlopen("https://opendata.arcgis.com/datasets/06da0f67fc1948e3aae93063750ad02b_790.geojson") as url:
+        data = json.loads(url.read().decode())
+    df = data_rf
+    small = df[['ZIP OR POSTAL CODE', aggreg_meth]]
+    df_new = pd.DataFrame(small.groupby(['ZIP OR POSTAL CODE']).mean()).reset_index()
+    fig = px.choropleth_mapbox(df_new, geojson=data, locations='ZIP OR POSTAL CODE', 
+                               color=aggreg_meth,
+                               featureidkey='properties.ZIP',
+                               color_continuous_scale="Viridis",
+                               mapbox_style="carto-positron",
+                               zoom=9, center = {"lat": 47.62, "lon": -122.3},
+                               opacity=0.5,
+                               labels={aggreg_meth:aggreg_meth}
+                              )
+    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    fig.show()
+    
 def aggregate_by_zip_spacial(input_dataframe=
                              pd.read_csv(examples_path /
                                          "sample_data_98075_2018-19.csv",
@@ -573,9 +589,9 @@ def aggregate_by_zip_spacial(input_dataframe=
 
     #convert to geodataframe for easy merging
     input_dataframe = gpd.GeoDataFrame(input_dataframe,
+                                       crs="epsg:4326",
                                        geometry=gpd.points_from_xy(input_dataframe['LONGITUDE'],
-                                                                   input_dataframe['LATITUDE']),
-                                       crs='epsg:4326')
+                                                                   input_dataframe['LATITUDE']))
 
     #pull in King County zip shapefiles and pare down to geometry and zip
     df_zip_shape = gpd.read_file(
