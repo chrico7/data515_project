@@ -21,7 +21,6 @@ Functions:
 
 Examples:
 
-
 """
 
 # Import packages
