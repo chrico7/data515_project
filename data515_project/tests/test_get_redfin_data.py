@@ -1,5 +1,5 @@
 import unittest
-import kc_real_estate as kc
+from data515_project.kc_real_estate import get_redfin_data
 
 # Define a class in which the tests will run
 class UnitTests(unittest.TestCase):
@@ -8,7 +8,7 @@ class UnitTests(unittest.TestCase):
     def setUp(self):
         """Defines the data frames and column lists to use for testing."""
 
-        self.df_redfin = kc.get_redfin_data()
+        self.df_redfin = get_redfin_data()
         self.check_cols = ['SALE TYPE', 'SOLD DATE', 'PROPERTY TYPE',
                            'ADDRESS', 'CITY', 'STATE OR PROVINCE',
                            'ZIP OR POSTAL CODE', 'PRICE', 'BEDS', 'BATHS',

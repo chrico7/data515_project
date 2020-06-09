@@ -1,7 +1,5 @@
-#import os
-#import sys
 import unittest
-import data515_project.kc_real_estate as kc
+from data515_project.kc_real_estate import get_county_data
 
 # Define a class in which the tests will run
 class UnitTests(unittest.TestCase):
@@ -10,9 +8,9 @@ class UnitTests(unittest.TestCase):
     def setUp(self):
         """Defines the data frames and column lists to use for testing."""
 
-        self.df_sale = kc.get_county_data("Real%20Property%20Sales")
-        self.df_building = kc.get_county_data("Residential%20Building")
-        self.df_parcel = kc.get_county_data("Parcel")
+        self.df_sale = get_county_data("Real%20Property%20Sales")
+        self.df_building = get_county_data("Residential%20Building")
+        self.df_parcel = get_county_data("Parcel")
 
         self.check_cols_sale = ['Major', 'Minor',
                                 'DocumentDate', 'PropertyType']

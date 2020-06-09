@@ -26,7 +26,7 @@ Ruian Yang
 
 ### kc_real_estate.py
 This contains the following functions, which form the core of the tool's operation:
-- get_user_input()
+- lets_begin()
 - get_county_data()
 - get_redfin_data()
 - organize_county_data()

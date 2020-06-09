@@ -7,7 +7,6 @@ website while data on currently active listings is from the Redfin API.
 
 Functions:
 
-    get_user_input()
     get_county_data()
     get_redfin_data()
     organize_county_data()

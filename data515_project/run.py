@@ -1,6 +1,16 @@
-"""module runs data import features of the tool.
-Contains a single function:
-lets_begin()
+"""Allows for interactive and easy querying of King County and Redfin Data.
+
+Leverages kc_real_estate.py to aggregate King County and Redfin Data, clean, 
+merge, query, and visualize the data. Provides easy user interactivity 
+through Jupyter Notebook allowing for the user to easily query and customize
+visualizations to best fit the user's needs.
+
+Functions:
+
+    lets_begin()
+
+Examples:
+
 """
 
 from data515_project.kc_real_estate import *

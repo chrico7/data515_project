@@ -3,8 +3,7 @@ import unittest
 from datetime import datetime
 
 sys.path.insert(1, '../../code')
-import organize_county_data as kc
-
+from data515_project.kc_real_estate import filter_county_data
 
 # Define a class in which the tests will run
 class UnitTests(unittest.TestCase):
@@ -13,7 +12,7 @@ class UnitTests(unittest.TestCase):
     def setUp(self):
         """Defines the data frames and column lists to use for testing."""
 
-        self.df_kc = kc.filter_county_data(['98136', '98108', '98115', '98133', '98038'],
+        self.df_kc = filter_county_data(['98136', '98108', '98115', '98133', '98038'],
                                            start_year='2000', start_month='1', start_day='1',
                                            end_year='2020', end_month='1', end_day='1', is_test=True)
         self.check_zip = ['98136', '98108', '98115', '98133', '98038']
