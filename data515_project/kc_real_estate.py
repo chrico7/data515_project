@@ -234,9 +234,6 @@ def organize_county_data(df_sale, df_building, df_parcel, df_lookup,
         ValueError: If passed end_year is after the last record.
         ValueError: If start date is after end date based on passed values.
     """
-    df_sale = df_sale[df_sale['Major'] != '      ']
-    df_sale = df_sale.astype({'Major': int, 'Minor': int})
-
     #df_lookup_items = pd.read_csv('https://raw.githubusercontent.com/' +
     #                              'chrico7/data515_project/' +
     #                              'master/data/look_up_item.csv')
@@ -258,6 +255,8 @@ def organize_county_data(df_sale, df_building, df_parcel, df_lookup,
 
     df_lookup['Look Up Description'] = (df_lookup['Look Up Description'].
                                         str.strip())
+
+    df_sale = df_sale.astype({'Major': int, 'Minor': int})
     # get valid zip codes in King County
 #    kc_zip_codes = df_building['Zip code'].dropna().unique()
 #    index = []
