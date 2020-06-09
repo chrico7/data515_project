@@ -1,6 +1,6 @@
 import unittest
 import pandas as pd
-import kc_real_estate as kc
+from data515_project.kc_real_estate import join_county_redfin
 
 # Define a class in which the tests will run
 class UnitTests(unittest.TestCase):
@@ -21,7 +21,7 @@ class UnitTests(unittest.TestCase):
                                        'All_King_Redfin.csv',
                                        low_memory=False)
 
-        self.all_data = kc.join_county_redfin(self.kc_data, self.redfin_data)
+        self.all_data = join_county_redfin(self.kc_data, self.redfin_data)
 
         self.check_cols = pd.read_csv('https://raw.githubusercontent.com/' +
                                       'chrico7/data515_project/master/' +
