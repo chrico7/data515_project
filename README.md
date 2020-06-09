@@ -26,7 +26,6 @@ Ruian Yang
 
 ### kc_real_estate.py
 This contains the following functions, which form the core of the tool's operation:
-- lets_begin()
 - get_county_data()
 - get_redfin_data()
 - organize_county_data()
@@ -102,6 +101,7 @@ data515_project/
   |- setup.py
   |- LICENSE
   |- requirements.txt
+  |- .travis.yml
 ```
 1: “More people are buying a home — the biggest financial decision of their lives — sight unseen”,  
     Seattle Times, 20 July 2018 [link](https://www.seattletimes.com/business/real-estate/more-people-are-buying-a-home-the-biggest-financial-decision-of-their-lives-sight-unseen/)  
