@@ -16,6 +16,9 @@ Functions:
     zipcode_choro()
     aggregate_by_date()
     trend_plot()
+    plotly_by_date()
+    zip_code_agg_plotly()
+    view_redfin_data_by_agg()
 
 Examples:
 
