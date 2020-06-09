@@ -1,9 +1,8 @@
-import sys
 import unittest
 from datetime import datetime
-
-sys.path.insert(1, '../../code')
+import pandas as pd
 from data515_project.kc_real_estate import organize_county_data
+
 
 # Define a class in which the tests will run
 class UnitTests(unittest.TestCase):
@@ -11,10 +10,20 @@ class UnitTests(unittest.TestCase):
     # Each method in the class to execute a test
     def setUp(self):
         """Defines the data frames and column lists to use for testing."""
+        # import data from local is doing unit tests
+        self.df_sale = pd.read_csv('./data515_project/tests/test_data/sale.csv', encoding='latin-1', low_memory=False)
+        self.df_building = pd.read_csv('./data515_project/tests/test_data/building.csv', encoding='latin-1',
+                                       low_memory=False)
+        self.df_parcel = pd.read_csv('./data515_project/tests/test_data/parcel.csv', encoding='latin-1',
+                                     low_memory=False)
+        self.df_lookup = pd.read_csv('./data515_project/tests/test_data/EXTR_LookUp.csv', encoding='latin-1',
+                                     low_memory=False)
 
-        self.df_kc = organize_county_data(['98136', '98108', '98115', '98133', '98038'],
-                                           start_year='2000', start_month='1', start_day='1',
-                                           end_year='2020', end_month='1', end_day='1', is_test=True)
+        self.df_kc = organize_county_data(self.df_sale, self.df_building, self.df_parcel, self.df_lookup,
+                                          ['98136', '98108', '98115', '98133', '98038'],
+                                          start_year='2000', start_month='1', start_day='1',
+                                          end_year='2020', end_month='1', end_day='1')
+
         self.check_zip = ['98136', '98108', '98115', '98133', '98038']
         self.check_start_date = datetime.strptime('01/01/00', "%m/%d/%y")
         self.check_end_date = datetime.strptime('01/01/20', "%m/%d/%y")
