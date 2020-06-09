@@ -8,7 +8,7 @@ Our project attempts to mitigate these difficulties by creating a tool to collec
 
 ## User Profile  
 
-The intended users of our final product are individuals interested in buying or selling real estate in Seattle but do not have experience or knowledge of the common terms used by the King County Assessor or the ability to manipulate and parse the large data files available on the Assessor’s website.  
+The intended users of our final product are individuals interested in buying or selling real estate in Seattle, with sector knowledge of real estate and analytic skills, but do not have experience or knowledge of the administrative terms used by the King County Assessor or the ability to manipulate and parse the large data files available on the Assessor’s website.  
 
 Basic users should be able to interact with simple online interactive maps and dashboards. Intermediate users should be comfortable with basic data analysis using tools such as Excel. Advanced users should be able to clone a git repository and run a Python script.  
 
@@ -29,33 +29,30 @@ Redfin is a real estate brokerage firm with a sophisticated web interface that d
 ## Use Cases  
 
 __Use Case 1:__  
-User is planning to list their house and wants independent guidance on an appropriate listing price based on comparable homes in the area.  
-- User: Input address of the house 
-    - UI Manager: Break user inputs into parameters and send to the Data Manager
-    - Data Manager: Pull and process data based on parameters from the UI Manager and send to the Figure Manager
-    - Figure Manager: Generate desired figures based on user input and return to the UI Manager for display
-- User: Inspect comparable properties or make changes to the properties included
-    - UI Manager: Send filtering criteria to the Data Manager
-    - Data Manager: Refine dataset based on user input and send to Figure Manager
-    - Figure Manager: Generate new figures and send to UI Manager  
+User wants independent guidance on an appropriate listing price of their house.
+
+- User: Inputs zipcode of interest   
+    - Tool:  retrieves latest listings data for zipcode of interest
+    - Tool:  retrieves latest assessor's’ data for zipcode of interest
+    - Tool:  merges two data sources and creates aggregations
+
+- User: Selects variables of interest and creates plots of interest
+   - Tool: takes user selection of variables of interest
+   - Tool: filters merged data
+   - Tool: produces visualizations of selected variables
+
     
 __Use Case 2:__  
-User is researching neighborhoods in Seattle for making investment.  
-- User: Select time span using drop down filters
-    - UI Manager: Break user inputs into parameters and send to the Data Manager
-    - Data Manager: Pull and process data based on parameters from the UI Manager and send to the Figure Manager
-    - User: Rank neighborhood by selling/listing price ratio
-    - Figure Manager: display zip codes with top selling/listing price ratio
-- User: Select multiple zip code for comparison
-    - Figure Manager: display price trends for selected zip codes
-    - Figure Manager: generate plots showing price trends  
-   
-__Use Case 3:__  
-User is interested in finding summary data on the type of housing in a given area
-- User: Inputs a geographic designation like zip code or  neighborhood
-    - UI Manager: Break user inputs into parameters and send to the Data Manager
-    - Data Manager: Pull and process data based on parameters from the UI Manager and sends back to the UI Manager
-    - UI Manager displays the results in as a text-based description
+User is researching neighborhoods in Seattle for making investment.
+
+- User: Select zip-code/s and time span
+   - Tool: retrieves latest assessor's’ data for zipcode of interest
+   - Tool: pull and process data based on parameters from the UI Manager and send to the Figure Manager
+   - User: Rank neighborhood by selling/listing price ratio
+
+- User: Select metric for comparison
+    - Tool: display data trends for selected zip codes
+    - Tool: generate plots showing data trends
 
 1: “More people are buying a home — the biggest financial decision of their lives — sight unseen”,  
     Seattle Times, 20 July 2018 [link](https://www.seattletimes.com/business/real-estate/more-people-are-buying-a-home-the-biggest-financial-decision-of-their-lives-sight-unseen/)  
