@@ -88,6 +88,7 @@ data515_project/
      |- data/
         |-kc/
         |-redfin/
+     |- output/
      |- tests/
   |- Demo.ipynb
   |- docs/
@@ -97,7 +98,6 @@ data515_project/
      |- TechnologyReview
      |- Final presentation
   |- examples/
-  |- output/
   |- setup.py
   |- LICENSE
   |- requirements.txt
