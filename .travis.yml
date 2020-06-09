@@ -18,7 +18,8 @@ install:
   # command to run tests
   - conda install --file requirements.txt
 script:
-  # - python3 data515_project/tests/test_get_county_data.py
+  - python3 setup.py install
+  #- python3 data515_project/tests/test_get_county_data.py
   - python3 data515_project/tests/test_organize_county_data.py
   - python3 data515_project/tests/test_aggregate_by_date.py
   - python3 data515_project/tests/test_aggregate_by_zip_spacial.py
