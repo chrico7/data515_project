@@ -419,7 +419,8 @@ def join_county_redfin(kc_data, redfin_data):
 
     # Extract list of unique zip_codes
     kc_trim.loc[:, 'Zip code'] = (pd.to_numeric(kc_trim['Zip code'].
-                                                fillna('0').str[:5],
+                                                fillna('0').astype(str).
+                                                str[:5],
                                                 errors='coerce').
                                   fillna('0').astype(int))
     zip_codes = (kc_trim.loc[(kc_trim['Zip code'] != 0) &
