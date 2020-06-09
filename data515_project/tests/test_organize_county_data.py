@@ -37,7 +37,7 @@ class UnitTests(unittest.TestCase):
         self.assertTrue(all(elem in self.df_kc['Zip code'].unique().tolist() for
                             elem in self.check_zip))
 
-   def test_dates(self):
+    def test_dates(self):
        """Asserts True if the returned dataframe contains sale records in the correct time frame."""
        self.df_sorted_by_date = self.df_kc.sort_values(by='Document Date', ascending=True)
        self.df_start_date = datetime.strptime(
@@ -52,7 +52,7 @@ class UnitTests(unittest.TestCase):
 
        self.assertTrue(start_bool and end_bool)
 
-   def test_property(self):
+    def test_property(self):
        """Asserts True if the returned dataframe contains the correct property type (single family houses)"""
        property_bool = self.df_kc['Property Type'][self.df_kc['Property Type'] != 'nan'].unique()[0] == \
                        self.property_type
