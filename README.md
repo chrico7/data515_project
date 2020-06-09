@@ -22,6 +22,26 @@ Ruian Yang
 
 - [Source 3: King County GIS Open Data](https://gis-kingcounty.opendata.arcgis.com/datasets/e6c555c6ae7542b2bdec92485892b6e6_113)
 
+## Modules
+
+### kc_real_estate.py
+This contains the following functions, which form the core of the tool's operation:
+- get_user_input()
+- get_county_data()
+- get_redfin_data()
+- organize_county_data()
+- join_county_redfin()
+- aggregate_by_zip_spacial()
+- zipcode_choro()
+- aggregate_by_date()
+- trend_plot()
+- plotly_by_date()
+- zip_code_agg_plotly()
+- view_redfin_data_by_agg()
+
+### run.py
+This contains a single function - lets_begin() - which is used in the setup and data load of the tool (see below).
+
 ## Software dependencies and license information
 
 #### Programming language: 
@@ -77,6 +97,8 @@ data515_project/
      |- Projectplan
      |- TechnologyReview
      |- Final presentation
+  |- examples/
+  |- output/
   |- setup.py
   |- LICENSE
   |- requirements.txt
