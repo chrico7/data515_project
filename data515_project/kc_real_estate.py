@@ -16,6 +16,9 @@ Functions:
     zipcode_choro()
     aggregate_by_date()
     trend_plot()
+    plotly_by_date()
+    zip_code_agg_plotly()
+    view_redfin_data_by_agg()
 
 Examples:
 
@@ -28,6 +31,8 @@ import difflib
 import io
 from pathlib import Path
 import time
+import json
+import urllib.request
 import requests
 
 import geopandas as gpd
@@ -35,9 +40,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.express as px
-import urllib.request
-import json 
-
 
 # Define paths
 home_path = Path.home()
@@ -335,15 +337,15 @@ def organize_county_data(df_sale, df_building, df_parcel, df_lookup,
     for col in df_all.columns:
         if col in df_lookup_items['Field Name'].tolist():
             look_up_type = int(df_lookup_items.loc[df_lookup_items['Field Name']
-                                               == col]['Look Up'])
+                                                   == col]['Look Up'])
             look_up_items = df_lookup.loc[df_lookup['Look Up Type']
-                                      == look_up_type]
+                                          == look_up_type]
 
             description_list = []
             for i in range(len(df_all[col])):
                 num = df_all[col].iloc[i]
                 description = (look_up_items.loc[look_up_items['Look Up Item']
-                                             == num]['Look Up Description'])
+                                                 == num]['Look Up Description'])
                 if len(description) == 0:
                     description_list.append('nan')
                 else:
@@ -538,13 +540,13 @@ def join_county_redfin(kc_data, redfin_data):
 
 #Generate visualizations from resulting dataframes, aggregating for easy charting
 def view_redfin_data_by_agg(input_dataframe, aggreg_meth):
-    """ Visualizes all Redfin Data currently availabe in a Plotly 
+    """ Visualizes all Redfin Data currently availabe in a Plotly
         visualization.
 
     Args:
         input_dataframe: Dataframe from intial data pull of the Redfin website API
-        aggreg_meth: A string that represents the column name which we will be the 
-        column which aggregations are done on. Possible values: 'SQUARE FEET', 
+        aggreg_meth: A string that represents the column name which we will be the
+        column which aggregations are done on. Possible values: 'SQUARE FEET',
         'PRICE', 'DAYS ON MARKET', 'LOT SIZE'
 
     Returns:
@@ -563,21 +565,21 @@ def view_redfin_data_by_agg(input_dataframe, aggreg_meth):
         df = data_rf
         small = df[['ZIP OR POSTAL CODE', aggreg_meth]]
         df_new = pd.DataFrame(small.groupby(['ZIP OR POSTAL CODE']).mean()).reset_index()
-        fig = px.choropleth_mapbox(df_new, geojson=data, locations='ZIP OR POSTAL CODE', 
+        fig = px.choropleth_mapbox(df_new, geojson=data, locations='ZIP OR POSTAL CODE',
                                    color=aggreg_meth,
                                    featureidkey='properties.ZIP',
                                    color_continuous_scale="Viridis",
                                    mapbox_style="carto-positron",
-                                   zoom=9, center = {"lat": 47.62, "lon": -122.3},
+                                   zoom=9, center={"lat": 47.62, "lon": -122.3},
                                    opacity=0.5,
                                    labels={aggreg_meth:aggreg_meth}
                                   )
-        fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+        fig.update_layout(margin={"r":0, "t":0, "l":0, "b":0})
         fig.show()
 def aggregate_by_zip_spacial(input_dataframe=
                              pd.read_csv(examples_path /
                                          "sample_data_98075_2018-19.csv",
-                                        low_memory=False)):
+                                         low_memory=False)):
     """
     Aggregates a joined input dataframe by date to allow easy graphing of trends
 
@@ -701,20 +703,20 @@ def zip_code_agg_plotly(input_dataframe, aggreg_meth):
         df = input_dataframe
         small = df[['Zip code', aggreg_meth]]
         df_new = pd.DataFrame(small.groupby(['Zip code']).mean()).reset_index()
-        fig = px.choropleth_mapbox(df_new, geojson=data, locations='Zip code', 
+        fig = px.choropleth_mapbox(df_new, geojson=data, locations='Zip code',
                                    color=aggreg_meth,
                                    featureidkey='properties.ZIP',
                                    color_continuous_scale="Viridis",
                                    mapbox_style="carto-positron",
-                                   zoom=9, center = {"lat": 47.62, "lon": -122.3},
+                                   zoom=9, center={"lat": 47.62, "lon": -122.3},
                                    opacity=0.5,
                                    labels={aggreg_meth:aggreg_meth}
                                   )
-        fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+        fig.update_layout(margin={"r":0, "t":0, "l":0, "b":0})
         fig.show()
 def aggregate_by_date(input_dataframe=pd.read_csv(examples_path /
                                                   "sample_data_98075_2018-19.csv",
-                                                 low_memory=False)):
+                                                  low_memory=False)):
     """
     Aggregates a joined input dataframe by date to allow easy graphing of trends
 
@@ -782,19 +784,20 @@ def plotly_by_date(data, zip_flag=None):
     Returns:
         A Plot.ly Figure
     """
-    if (zip_flag==None):
+    if zip_flag == None:
         agg_by_date = aggregate_by_date(data)
         agg_by_date = agg_by_date.reset_index()
-        fig = px.line(agg_by_date, x="Document Date", y="Mean sale price", title='Mean Sale Price During Time Frame')
+        fig = px.line(agg_by_date, x="Document Date", y="Mean sale price",
+                      title='Mean Sale Price During Time Frame')
         fig.show()
     else:
         data['Document Date'] = data['Document Date'].astype('datetime64[ns]')
 
         #aggregate key variables in dataframe by date
-        input_aggregate = data.groupby(["Zip code","Document Date"]).agg(
+        input_aggregate = data.groupby(["Zip code", "Document Date"]).agg(
             {'Sale Price':'mean',
              'Excise Tax Number':'nunique'})
-        
+
         input_aggregate = input_aggregate.reset_index()
 
         #rename columns to reflect aggregation
@@ -803,6 +806,6 @@ def plotly_by_date(data, zip_flag=None):
         #remove any miscodes (some dates in 2070)
         agg_by_date = input_aggregate[input_aggregate['Document Date'] < datetime.datetime.now()]
         fig = px.line(agg_by_date, x="Document Date", y="Mean sale price", color="Zip Code",
-              line_group="Zip Code", hover_name="Zip Code", 
+              line_group="Zip Code", hover_name="Zip Code",
                       title='Mean Sale Price During Time Frame Broken up by Zip Code')
         fig.show()

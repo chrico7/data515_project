@@ -5,7 +5,7 @@ import datetime
 
 
 def filter_county_data(zip_code: list, start_year='2010', start_month='1', start_day='1',
-                       end_year='2020', end_month='1', end_day='1'):
+                       end_year='2020', end_month='1', end_day='1', is_test = False):
     """ Cleans and organizes data retrieved from the King County Assessors website.
 
     Renames columns consistently, filters data using default and customizable inputs,
@@ -30,14 +30,19 @@ def filter_county_data(zip_code: list, start_year='2010', start_month='1', start
         ValueError: If passed end_year is after the last record.
         ValueError: If start date is after end date based on passed values.
     """
-    # get data using get_county_data()
-    df_sale = get_county_data("Real%20Property%20Sales")
-    df_building = get_county_data("Residential%20Building")
-    df_parcel = get_county_data("Parcel")
-    df_lookup = get_county_data("Lookup")
 
-    df_sale = df_sale[df_sale['Major'] != '      ']
-    df_sale = df_sale.astype({'Major': int, 'Minor': int})
+    if is_test:
+        # import data from local is doing unit tests
+        df_sale = pd.read_csv('./test_data/sale.csv', encoding='latin-1', low_memory=False)
+        df_building = pd.read_csv('./test_data/building.csv', encoding='latin-1', low_memory=False)
+        df_parcel = pd.read_csv('./test_data/parcel.csv', encoding='latin-1', low_memory=False)
+        df_lookup = pd.read_csv('./test_data/EXTR_LookUp.csv', encoding='latin-1', low_memory=False)
+    else:
+        # get data using get_county_data()
+        df_sale = get_county_data("Real%20Property%20Sales")
+        df_building = get_county_data("Residential%20Building")
+        df_parcel = get_county_data("Parcel")
+        df_lookup = get_county_data("Lookup")
 
     df_lookup_items = pd.read_csv('../data/look_up_item.csv')
     df_col_names = pd.read_csv('../data/column_names.csv')
@@ -49,11 +54,15 @@ def filter_county_data(zip_code: list, start_year='2010', start_month='1', start
 
     df_lookup['Look Up Description'] = df_lookup['Look Up Description'].str.strip()
 
+    df_sale = df_sale[df_sale['Major'] != '      ']
+    df_sale = df_sale.astype({'Major': int, 'Minor': int})
+
     # get valid zip codes in King County
-    kc_zip_codes = df_building['Zip code'].dropna().unique()
+    kc_zip_codes = df_building['Zip code'].dropna().unique().tolist()
     index = []
     for i in range(len(kc_zip_codes)):
-        if type(kc_zip_codes[i]) == float:
+
+        if type(kc_zip_codes[i]) == float or type(kc_zip_codes[i] == int):
             kc_zip_codes[i] = int(kc_zip_codes[i])
             kc_zip_codes[i] = str(kc_zip_codes[i])
         if kc_zip_codes[i][:2] != '98' or (len(kc_zip_codes[i]) != 5 and len(kc_zip_codes[i]) != 10):
@@ -75,6 +84,7 @@ def filter_county_data(zip_code: list, start_year='2010', start_month='1', start
 
     begin_year = df_sale.sort_values(['Document Date'], ascending=[True])['Document Date'].iloc[0].year
     end_year = df_sale.sort_values(['Document Date'], ascending=[True])['Document Date'].iloc[-1].year
+
     if int(start_year) < int(begin_year):
         raise ValueError('There is no record before year' + str(begin_year))
     if int(start_year) > int(end_year):
@@ -104,7 +114,8 @@ def filter_county_data(zip_code: list, start_year='2010', start_month='1', start
     for code in zip_code:
         df_building_sf_zip = df_building_sf_zip.append(df_building_sf[df_building_sf['Zip code'] == code])
 
-    new_df = pd.merge(df_building_sf_zip, df_sale_sf_recent, how='left', left_on=['Major', 'Minor'], right_on=['Major', 'Minor'])
+    new_df = pd.merge(df_building_sf_zip, df_sale_sf_recent, how='left', left_on=['Major', 'Minor'],
+                      right_on=['Major', 'Minor'])
     df_all = pd.merge(new_df, df_parcel_sf, how='left', left_on=['Major', 'Minor'], right_on=['Major', 'Minor'])
 
     # replace numerical codes in records to readable descriptions
