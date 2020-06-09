@@ -10,6 +10,7 @@ class UnitTests(unittest.TestCase):
     # Each method in the class to execute a test
     def setUp(self):
         """Defines the data frames and column lists to use for testing."""
+
         # import data from local is doing unit tests
         self.df_sale = pd.read_csv('./data515_project/tests/test_data/sale.csv', encoding='latin-1', low_memory=False)
         self.df_building = pd.read_csv('./data515_project/tests/test_data/building.csv', encoding='latin-1',
@@ -36,30 +37,30 @@ class UnitTests(unittest.TestCase):
         self.assertTrue(all(elem in self.df_kc['Zip code'].unique().tolist() for
                             elem in self.check_zip))
 
-    def test_dates(self):
-        """Asserts True if the returned dataframe contains sale records in the correct time frame."""
-        self.df_sorted_by_date = self.df_kc.sort_values(by='Document Date', ascending=True)
-        self.df_start_date = datetime.strptime(
-            str(self.df_sorted_by_date[self.df_sorted_by_date['Document Date'].notna()]['Document Date'].iloc[0]),
-            "%Y-%m-%d %H:%M:%S")
-        self.df_end_date = datetime.strptime(
-            str(self.df_sorted_by_date[self.df_sorted_by_date['Document Date'].notna()]['Document Date'].iloc[-1]),
-            "%Y-%m-%d %H:%M:%S")
+   def test_dates(self):
+       """Asserts True if the returned dataframe contains sale records in the correct time frame."""
+       self.df_sorted_by_date = self.df_kc.sort_values(by='Document Date', ascending=True)
+       self.df_start_date = datetime.strptime(
+           str(self.df_sorted_by_date[self.df_sorted_by_date['Document Date'].notna()]['Document Date'].iloc[0]),
+           "%Y-%m-%d %H:%M:%S")
+       self.df_end_date = datetime.strptime(
+           str(self.df_sorted_by_date[self.df_sorted_by_date['Document Date'].notna()]['Document Date'].iloc[-1]),
+           "%Y-%m-%d %H:%M:%S")
 
-        start_bool = self.df_start_date >= self.check_start_date
-        end_bool = self.df_end_date <= self.check_end_date
+       start_bool = self.df_start_date >= self.check_start_date
+       end_bool = self.df_end_date <= self.check_end_date
 
-        self.assertTrue(start_bool and end_bool)
+       self.assertTrue(start_bool and end_bool)
 
-    def test_property(self):
-        """Asserts True if the returned dataframe contains the correct property type (single family houses)"""
-        property_bool = self.df_kc['Property Type'][self.df_kc['Property Type'] != 'nan'].unique()[0] == \
-                        self.property_type
+   def test_property(self):
+       """Asserts True if the returned dataframe contains the correct property type (single family houses)"""
+       property_bool = self.df_kc['Property Type'][self.df_kc['Property Type'] != 'nan'].unique()[0] == \
+                       self.property_type
 
-        unit_bool = self.df_kc['Number Living Units'][self.df_kc['Number Living Units'].notna()].unique()[0] == \
-                    self.living_unit
+       unit_bool = self.df_kc['Number Living Units'][self.df_kc['Number Living Units'].notna()].unique()[0] == \
+                   self.living_unit
 
-        self.assertTrue(property_bool and unit_bool)
+       self.assertTrue(property_bool and unit_bool)
 
 
 if __name__ == '__main__':
