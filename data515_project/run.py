@@ -1,11 +1,17 @@
-from data515_project.kc_real_estate import *
-
+"""module runs data import features of the tool.
+Contains a single function:
+lets_begin()
+"""
+from data515_project.kc_real_estate import get_redfin_data
+from data515_project.kc_real_estate import get_county_data
+from data515_project.kc_real_estate import join_county_redfin
+from data515_project.kc_real_estate import organize_county_data
 
 # Get raw assessor's data
 print("Thank you for using the King County Real Estate Tool! \n" +
       "Hold on, we're getting the most recent historical data "+
       "from the King County Assessor and current active " +
-      "listings from Redfin. We will let you know when the data " + 
+      "listings from Redfin. We will let you know when the data " +
       "is collected.")
 
 df_sale = get_county_data("Real%20Property%20Sales")
@@ -16,8 +22,10 @@ df_lookup = get_county_data("Lookup")
 # Get raw redfin data
 df_redfin = get_redfin_data()
 
-print("Data is collected. To explore Redfin's King County MLS Data run kc.view_redfin_data_by_price(kc.df_redfin) below. Or to begin querying the data run kc.lets_begin() in the cell below.")
-
+print("Data is collected. To explore Redfin's King County MLS " +
+      "Data run kc.view_redfin_data_by_price(kc.df_redfin) " +
+      "below. Or to begin querying the data run kc.lets_begin()" +
+      " in the cell below.")
 
 ####
 ## Query Data By Zip and Date
@@ -38,10 +46,10 @@ def lets_begin():
     # get user input and generate variables
     while True:
         user_input = (input("Would you like to use" +
-                             "tool defaults? (Yes/No): "))
-        
+                            "tool defaults? (Yes/No): "))
+
         # Check inputs
-        if user_input != "Yes" and user_input !="No":
+        if user_input != "Yes" and user_input != "No":
             print("Please enter Yes or No")
         else:
             break
@@ -56,7 +64,8 @@ def lets_begin():
         end_month = '12'
         end_day = '31'
     else:
-        zip_code = [x.strip(' ') for x in input("Enter zip code (separated by comma) : ").split(',')]
+        zip_code = [x.strip(' ') for x in
+                    input("Enter zip code (separated by comma) : ").split(',')]
         #print(zip_code)
         start_year = (input("Enter start year: "))
         start_month = (input("Enter start month: "))
@@ -68,9 +77,9 @@ def lets_begin():
     print("Querying King County Data")
     # Organize King County data
     df_county = organize_county_data(df_sale, df_building, df_parcel, df_lookup,
-                                         zip_code,
-                                         start_year, start_month, start_day,
-                                         end_year, end_month, end_day)
+                                     zip_code,
+                                     start_year, start_month, start_day,
+                                     end_year, end_month, end_day)
     print("Joining with Redfin Data")
 
     # Combine assessor and redfin data
