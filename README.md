@@ -62,12 +62,12 @@ This contains a single function - lets_begin() - which is used in the setup and 
 #### Installation:
 
 We recommend using conda to manage your python environment and packages <br/>
-
+```
 $ git clone https://github.com/chrico7/data515_project.git <br/>
 $ cd data515_project/ <br/>
 $ conda install --file requirements.txt <br/>
-$ python3 setup.py install <br/>
 $ jupyter notebook
+```
 
 Then run <code>import data515_project.run as kc</code>. See Demo.ipynb for examples.
 

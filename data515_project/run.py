@@ -43,7 +43,7 @@ def lets_begin():
     """
     # get user input and generate variables
     while True:
-        user_input = (input("Would you like to use" +
+        user_input = (input("Would you like to use " +
                             "tool defaults? (Yes/No): "))
 
         # Check inputs
