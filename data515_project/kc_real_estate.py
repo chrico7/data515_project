@@ -256,6 +256,7 @@ def organize_county_data(df_sale, df_building, df_parcel, df_lookup,
     df_lookup['Look Up Description'] = (df_lookup['Look Up Description'].
                                         str.strip())
 
+    df_sale = df_sale[df_sale['Major'] != '      ']
     df_sale = df_sale.astype({'Major': int, 'Minor': int})
     # get valid zip codes in King County
 #    kc_zip_codes = df_building['Zip code'].dropna().unique()
