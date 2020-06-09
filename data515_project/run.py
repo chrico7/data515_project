@@ -1,3 +1,8 @@
+"""module runs data import features of the tool.
+Contains a single function:
+lets_begin()
+"""
+
 from data515_project.kc_real_estate import *
 
 
