@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/chrico7/data515_project.svg?branch=master)](https://travis-ci.org/chrico7/data515_project)
+[![Coverage Status](https://coveralls.io/repos/github/chrico7/data515_project/badge.svg)](https://coveralls.io/github/chrico7/data515_project)
 # King County Real Estate Visualization Tool
 ----
 Final project for DATA515 spring 2020

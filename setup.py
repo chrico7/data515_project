@@ -4,7 +4,7 @@ setuptools.setup(
     name="KingCountyRealEstate",
     version="1.0.0",
     author="Corey Christopherson, Richard Todd, Maggie Weatherly, Ruian Yang",
-    author_email="coreyc2@uw.edu, ,mweath@uw.edu, ruiany@uw.edu",
+    author_email="coreyc2@uw.edu, rcctodd@uw.edu, mweath@uw.edu, ruiany@uw.edu",
     description="",
     long_description_content_type="text/markdown",
     url="https://github.com/chrico7/data515_project",
