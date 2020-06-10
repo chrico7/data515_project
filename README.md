@@ -104,6 +104,7 @@ data515_project/
   |- examples/
   |- setup.py
   |- LICENSE
+  |- CODE_OF_CONDUCT.md
   |- requirements.txt
   |- .travis.yml
 ```
