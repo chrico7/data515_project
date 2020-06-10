@@ -304,8 +304,8 @@ def organize_county_data(df_sale, df_building, df_parcel, df_lookup,
     df_building['Zip code'] = pd.to_numeric(df_building['Zip code'],
                                             errors='coerce')
     df_building = df_building.dropna(subset=['Zip code'])
-    df_building['Zip code'] = df_building['Zip code'].astype(int)
-    df_building['Zip code'] = df_building['Zip code'].astype(str)
+    df_building['Zip code'] = df_building.loc['Zip code'].astype(int)
+    df_building['Zip code'] = df_building.loc['Zip code'].astype(str)
 
     # limit properties to only single family houses
     df_parcel_sf = df_parcel.loc[df_parcel['Property Type'] == 'R']
