@@ -74,6 +74,10 @@ Open Demo.ipynb for example.
 
 The MIT License is a permissive free software license originating at the Massachusetts Institute of Technology (MIT). As a permissive license, it puts only very limited restriction on reuse and has therefore an excellent license compatibility. For detailed description of the contents of license please refer to the file [License](https://github.com/chrico7/data515_project/blob/master/LICENSE).
 
+#### Code of Conduct:
+
+The authors request that all contributors abide by the project's code of conduct.
+
 ## Organization of the project
 
 The project has the following structure:
